@@ -1,8 +1,7 @@
 package com.zipcodewilmington.looplabs;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
+
 
 /**
  * Created by leon on 1/25/18.
@@ -14,44 +13,51 @@ public abstract class DuplicateDeleter<T> implements DuplicateDeleterInterface<T
         this.array = intArray;
     }
 
-    public T[] removeDuplicates(int maxNumberOfDuplications){
-        for (T object : this.array){
-            if (getNumberOfOccurrences(object) >= maxNumberOfDuplications) {
-                this.array = removeValue((Class<T>) object.getClass(), object);
+    public T[] removeDuplicates(int maxNumberOfDuplications) {
+        T[] arr = array.clone();
+        for (T object : arr) {
+            if (getNumberOfOccurrences(arr, object) >= maxNumberOfDuplications) {
+                arr = removeValue((Class<T>) object.getClass(), arr, object);
             }
         }
-        return this.array;
+        return arr;
     }
 
-    public T[] removeDuplicatesExactly(int exactNumberOfDuplications){
-        for (T object : this.array){
-            if (getNumberOfOccurrences(object) == exactNumberOfDuplications) {
-                this.array = removeValue((Class<T>) object.getClass(), object);
+    public T[] removeDuplicatesExactly(int exactNumberOfDuplications) {
+        T[] arr = array.clone();
+        for (T object : arr) {
+            if (getNumberOfOccurrences(arr, object) == exactNumberOfDuplications) {
+                arr = removeValue((Class<T>) object.getClass(), arr, object);
             }
         }
-        return this.array;
+        return arr;
     }
 
-    public Integer getNumberOfOccurrences(T valueToEvaluate) {
+    public Integer getNumberOfOccurrences(T[] arr, T valueToEvaluate) {
         Integer count = 0;
-        for (T t : this.array){
-            if(t.equals(valueToEvaluate)){
+        for (T t : arr) {
+            if (t.equals(valueToEvaluate)) {
                 count++;
             }
         }
         return count;
     }
 
-    public T[] removeValue(Class<T> cls, T valueToRemove) {
-        T[] arr = (T[]) Array.newInstance(cls, array.length - getNumberOfOccurrences(valueToRemove));
+    public T[] removeValue(Class<T> cls, T[] ar, T valueToRemove) {
+        T[] arr = (T[]) Array.newInstance(cls, ar.length - getNumberOfOccurrences(ar, valueToRemove));
 
         int newArrIndex = 0;
-        for (int i = 0; i < array.length; i++){
-            if (array[i] != valueToRemove){
-                arr[newArrIndex] = this.array[i];
-                newArrIndex++;
+        try {
+            for (int i = 0; i < ar.length; i++) {
+                if (ar[i] != valueToRemove) {
+                    arr[newArrIndex] = ar[i];
+                    newArrIndex++;
+                }
             }
+        } catch (IndexOutOfBoundsException e) {
+            return arr;
         }
+
         return arr;
     }
 
