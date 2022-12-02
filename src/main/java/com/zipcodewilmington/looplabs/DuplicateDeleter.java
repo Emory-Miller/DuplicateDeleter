@@ -57,7 +57,6 @@ public abstract class DuplicateDeleter<T> implements DuplicateDeleterInterface<T
         } catch (IndexOutOfBoundsException e) {
             return arr;
         }
-
         return arr;
     }
 
